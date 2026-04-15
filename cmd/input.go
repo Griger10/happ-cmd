@@ -15,7 +15,7 @@ func readChoice() string {
 }
 
 func readLine(prompt string, defaultValue string) string {
-	fmt.Printf("%s (Enter для %q): ", prompt, defaultValue)
+	fmt.Printf("%s (Enter for %q): ", prompt, defaultValue)
 	scanner.Scan()
 	input := strings.TrimSpace(scanner.Text())
 	if input == "" {
@@ -25,7 +25,7 @@ func readLine(prompt string, defaultValue string) string {
 }
 
 func readLines(prompt string) []string {
-	fmt.Printf("%s (через запятую, Enter чтобы пропустить): ", prompt)
+	fmt.Printf("%s (comma-separated, Enter to skip): ", prompt)
 	scanner.Scan()
 	input := strings.TrimSpace(scanner.Text())
 	if input == "" {

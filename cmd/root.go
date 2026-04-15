@@ -9,39 +9,38 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use:   "happcmd",
-	Short: "CLI для генерации Happ routing профилей",
-	Long: `happcmd — инструмент для генерации ссылок импорта
-профилей маршрутизации для приложения Happ.
+	Short: "CLI tool for generating Happ routing profile links",
+	Long: `happcmd — a command-line tool for generating Happ routing
+profile import links.
 
-Позволяет создавать профили с кастомными правилами
-маршрутизации и экспортировать их в формате happ://`,
+Allows creating profiles with custom routing rules
+and exporting them in happ:// format.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		for {
 			fmt.Printf("\nhappcmd v%s\n", Version)
-			fmt.Println("1. Сгенерировать профиль")
-			fmt.Println("2. Выход")
-			fmt.Print("\nВыберите действие: ")
+			fmt.Println("1. Generate profile")
+			fmt.Println("2. Exit")
+			fmt.Print("\nSelect action: ")
 			choiceStr := readChoice()
 			var choice int
 			_, err := fmt.Sscan(choiceStr, &choice)
 			if err != nil {
-				fmt.Println("Введите число")
+				fmt.Println("Please enter a number")
 				continue
 			}
 
 			switch choice {
 			case 1:
-				name := readLine("Название профиля", "DefaultProfile")
-				mode := readLine("Режим (add/onadd)", "add")
-				directSites := readLines("Прямые сайты")
-				blockSites := readLines("Заблокированные сайты")
-				directIPs := readLines("Прямые IP")
+				name := readLine("Profile name", "DefaultProfile")
+				mode := readLine("Mode (add/onadd)", "add")
+				directSites := readLines("Direct sites")
+				blockSites := readLines("Blocked sites")
+				directIPs := readLines("Direct IPs")
 				runGenerate(name, mode, directSites, blockSites, directIPs)
 			case 2:
-				fmt.Println("Выход...")
 				return
 			default:
-				fmt.Println("Неизвестная команда")
+				fmt.Println("Unknown command")
 			}
 		}
 	},
@@ -49,12 +48,12 @@ var rootCmd = &cobra.Command{
 
 var generateCmd = &cobra.Command{
 	Use:   "generate",
-	Short: "Сгенерировать Routing профиль",
-	Long: `Генерирует профиль маршрутизации и выводит ссылку для импорта в Happ.
+	Short: "Generate a routing profile",
+	Long: `Generates a routing profile and outputs an import link for Happ.
 
-Примеры:
+Examples:
   happcmd generate
-  happcmd generate -n "Мой профиль"
+  happcmd generate -n "My Profile"
   happcmd generate -m onadd
   happcmd generate --add-direct-site "domain:github.com"
   happcmd generate --add-block-site "geosite:gambling" --add-direct-ip "1.2.3.4/32"`,
@@ -70,11 +69,11 @@ var generateCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(generateCmd)
-	generateCmd.Flags().StringP("mode", "m", "add", "Режим импорта: add или onadd")
-	generateCmd.Flags().StringP("name", "n", "DefaultProfile", "Название профиля в Happ")
-	generateCmd.Flags().StringSlice("add-direct-site", []string{}, "Сайты для прямой передачи трафика")
-	generateCmd.Flags().StringSlice("add-block-site", []string{}, "Сайты для блокировки трафика")
-	generateCmd.Flags().StringSlice("add-direct-ip", []string{}, "Сайты для прямой передачи трафика по IP")
+	generateCmd.Flags().StringP("mode", "m", "add", "Import mode: add or onadd")
+	generateCmd.Flags().StringP("name", "n", "DefaultProfile", "Profile name in Happ")
+	generateCmd.Flags().StringSlice("add-direct-site", []string{}, "Sites for direct routing")
+	generateCmd.Flags().StringSlice("add-block-site", []string{}, "Sites to block")
+	generateCmd.Flags().StringSlice("add-direct-ip", []string{}, "IPs for direct routing")
 }
 
 func Execute() {
