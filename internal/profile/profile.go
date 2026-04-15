@@ -25,7 +25,42 @@ type Profile struct {
 	UseChunkFiles     string            `json:"UseChunkFiles"`
 }
 
-func NewProfile(name string) *Profile {
+func NewProfile(name string, userDirectSites []string, userBlockSites []string, userDirectIPs []string) *Profile {
+	commonSites := []string{
+		"geosite:ru",
+		"geosite:geolocation-ru",
+		"geosite:category-gov-ru",
+		"domain:vk.com",
+		"domain:vk.me",
+		"domain:userapi.com",
+		"domain:vkuseraudio.net",
+		"domain:vkuservideo.net",
+		"domain:vkvideo.ru",
+		"domain:mail.ru",
+		"domain:ok.ru",
+		"domain:max.ru",
+		"domain:yandex.ru",
+		"domain:yandex.net",
+		"domain:yandex.com",
+		"domain:ya.ru",
+		"domain:yastatic.net",
+		"domain:yandexcloud.net",
+		"domain:cdnvideo.ru",
+	}
+	commonBlockSites := []string{
+		"geosite:category-ads-all",
+	}
+	commonDirectIPs := []string{
+		"geoip:ru",
+		"geoip:private",
+		"10.0.0.0/8",
+		"172.16.0.0/12",
+		"192.168.0.0/16",
+	}
+	directSites := append(commonSites, userDirectSites...)
+	blockSites := append(commonBlockSites, userBlockSites...)
+	directIPs := append(commonDirectIPs, userDirectIPs...)
+
 	return &Profile{
 		Name:              name,
 		GlobalProxy:       "true",
@@ -46,39 +81,11 @@ func NewProfile(name string) *Profile {
 			"dns.yandex": "77.88.8.8",
 		},
 
-		DirectSites: []string{
-			"geosite:ru",
-			"geosite:geolocation-ru",
-			"geosite:category-gov-ru",
-			"domain:vk.com",
-			"domain:vk.me",
-			"domain:userapi.com",
-			"domain:vkuseraudio.net",
-			"domain:vkuservideo.net",
-			"domain:vkvideo.ru",
-			"domain:mail.ru",
-			"domain:ok.ru",
-			"domain:max.ru",
-			"domain:yandex.ru",
-			"domain:yandex.net",
-			"domain:yandex.com",
-			"domain:ya.ru",
-			"domain:yastatic.net",
-			"domain:yandexcloud.net",
-			"domain:cdnvideo.ru",
-		},
+		DirectSites: directSites,
 
-		DirectIp: []string{
-			"geoip:ru",
-			"geoip:private",
-			"10.0.0.0/8",
-			"172.16.0.0/12",
-			"192.168.0.0/16",
-		},
+		DirectIp: directIPs,
 
-		BlockSites: []string{
-			"geosite:category-ads-all",
-		},
+		BlockSites: blockSites,
 
 		DomainStrategy: "IPIfNonMatch",
 	}
