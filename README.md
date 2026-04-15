@@ -1,14 +1,14 @@
 # happcmd
 
-CLI-инструмент для генерации ссылок импорта профилей маршрутизации для приложения [Happ](https://happ.su).
+CLI tool for generating routing profile import links for the [Happ](https://happ.su) application.
 
-## Установка
+## Installation
 
-### Скачать бинарник
+### Download binary
 
-Скачайте последний релиз со страницы [Releases](https://github.com/Griger10/happcmd/releases).
+Download the latest release from the [Releases](https://github.com/Griger10/happcmd/releases) page.
 
-### Собрать из исходников
+### Build from source
 
 ```bash
 git clone https://github.com/Griger10/happcmd
@@ -16,80 +16,80 @@ cd happcmd
 go build -o happcmd .
 ```
 
-## Использование
+## Usage
 
-### Интерактивный режим
+### Interactive mode
 
-Запустите без аргументов — откроется интерактивное меню:
+Run without arguments to open the interactive menu:
 
 ```bash
 happcmd
 ```
 
-### CLI режим
+### CLI mode
 
 ```bash
-# Дефолтный профиль для России
+# Default Russia routing profile
 happcmd generate
 
-# С именем профиля
-happcmd generate -n "Мой профиль"
+# With a custom profile name
+happcmd generate -n "My Profile"
 
-# Автоактивация при импорте
+# Auto-activate on import
 happcmd generate -m onadd
 
-# Добавить сайты в прямой доступ
+# Add sites to direct routing
 happcmd generate --add-direct-site "domain:github.com" --add-direct-site "domain:notion.so"
 
-# Добавить сайты в блокировку
+# Add sites to block list
 happcmd generate --add-block-site "geosite:gambling"
 
-# Добавить IP в прямой доступ
+# Add IPs to direct routing
 happcmd generate --add-direct-ip "1.2.3.4/32"
 
-# Комбинированный пример
+# Combined example
 happcmd generate -n "Work" -m onadd \
   --add-direct-site "domain:github.com" \
   --add-block-site "geosite:gambling"
 ```
 
-## Флаги
+## Flags
 
-| Флаг | Короткий | По умолчанию | Описание |
-|------|----------|--------------|----------|
-| `--name` | `-n` | `DefaultProfile` | Название профиля в Happ |
-| `--mode` | `-m` | `add` | Режим импорта: `add` или `onadd` |
-| `--add-direct-site` | — | — | Добавить домен в прямой доступ |
-| `--add-block-site` | — | — | Добавить домен в блокировку |
-| `--add-direct-ip` | — | — | Добавить IP/CIDR в прямой доступ |
+| Flag | Short | Default | Description |
+|------|-------|---------|-------------|
+| `--name` | `-n` | `DefaultProfile` | Profile name in Happ |
+| `--mode` | `-m` | `add` | Import mode: `add` or `onadd` |
+| `--add-direct-site` | — | — | Add domain to direct routing |
+| `--add-block-site` | — | — | Add domain to block list |
+| `--add-direct-ip` | — | — | Add IP/CIDR to direct routing |
 
-## Режимы импорта
+## Import modes
 
-| Режим | Описание |
-|-------|----------|
-| `add` | Добавляет профиль в список. Первый добавленный становится активным после загрузки геофайлов |
-| `onadd` | Добавляет и сразу активирует профиль |
+| Mode | Description |
+|------|-------------|
+| `add` | Adds the profile to the list. The first added profile becomes active after geo files are loaded |
+| `onadd` | Adds and immediately activates the profile |
 
-## Что включено в дефолтный профиль
+## Default profile
 
-**Прямой доступ (без туннеля):**
-- Российские домены и IP (`geosite:ru`, `geoip:ru`)
-- ВКонтакте, Яндекс, Mail.ru и связанные CDN
-- Государственные сайты (`geosite:category-gov-ru`)
-- Локальные сети
+**Direct routing (no tunnel):**
+- Russian domains and IPs (`geosite:ru`, `geoip:ru`)
+- VK, Yandex, Mail.ru and related CDNs
+- Government sites (`geosite:category-gov-ru`)
+- Local networks
 
-**Блокировка:**
-- Рекламные сети (`geosite:category-ads-all`)
+**Blocked:**
+- Ad networks (`geosite:category-ads-all`)
 
 **DNS:**
 - Remote: Google DoH (`https://dns.google/dns-query`)
-- Domestic: Яндекс DoU
+- Domestic: Yandex DoU
 
-## Требования
+## Requirements
 
 - Go 1.21+
-- Приложение [Happ](https://happ.su) на iOS
+- [Happ](https://happ.su) app on iOS
 
-## Лицензия
+## License
 
 MIT
