@@ -17,7 +17,7 @@ var rootCmd = &cobra.Command{
 маршрутизации и экспортировать их в формате happ://`,
 	Run: func(cmd *cobra.Command, args []string) {
 		for {
-			fmt.Println("\nhappcmd v0.1.0")
+			fmt.Printf("\nhappcmd v%s\n", Version)
 			fmt.Println("1. Сгенерировать профиль")
 			fmt.Println("2. Выход")
 			fmt.Print("\nВыберите действие: ")
