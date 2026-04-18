@@ -69,6 +69,8 @@ Examples:
 
 func init() {
 	rootCmd.AddCommand(generateCmd)
+	rootCmd.AddCommand(PresetCommand)
+	rootCmd.AddCommand(DecodeCommand)
 	generateCmd.Flags().StringP("mode", "m", "add", "Import mode: add or onadd")
 	generateCmd.Flags().StringP("name", "n", "DefaultProfile", "Profile name in Happ")
 	generateCmd.Flags().StringSlice("add-direct-site", []string{}, "Sites for direct routing")

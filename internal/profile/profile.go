@@ -25,8 +25,32 @@ type Profile struct {
 	UseChunkFiles     string            `json:"UseChunkFiles"`
 }
 
+func baseProfile(name string) *Profile {
+	return &Profile{
+		Name:              name,
+		GlobalProxy:       "true",
+		RouteOrder:        "block-proxy-direct",
+		RemoteDNSType:     "DoH",
+		RemoteDNSDomain:   "https://dns.google/dns-query",
+		RemoteDNSIP:       "8.8.8.8",
+		DomesticDNSType:   "DoU",
+		DomesticDNSDomain: "dns.yandex",
+		DomesticDNSIP:     "77.88.8.8",
+		Geoipurl:          "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat",
+		Geositeurl:        "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat",
+		FakeDNS:           "false",
+		UseChunkFiles:     "true",
+		DnsHosts: map[string]string{
+			"dns.google": "8.8.8.8",
+			"dns.yandex": "77.88.8.8",
+		},
+		DomainStrategy: "IPIfNonMatch",
+	}
+}
+
 func NewProfile(name string, userDirectSites []string, userBlockSites []string, userDirectIPs []string) *Profile {
-	commonSites := []string{
+	p := baseProfile(name)
+	p.DirectSites = append([]string{
 		"geosite:ru",
 		"geosite:geolocation-ru",
 		"geosite:category-gov-ru",
@@ -46,47 +70,39 @@ func NewProfile(name string, userDirectSites []string, userBlockSites []string, 
 		"domain:yastatic.net",
 		"domain:yandexcloud.net",
 		"domain:cdnvideo.ru",
-	}
-	commonBlockSites := []string{
-		"geosite:category-ads-all",
-	}
-	commonDirectIPs := []string{
+	}, userDirectSites...)
+	p.BlockSites = append([]string{"geosite:category-ads-all"}, userBlockSites...)
+	p.DirectIp = append([]string{
 		"geoip:ru",
 		"geoip:private",
 		"10.0.0.0/8",
 		"172.16.0.0/12",
 		"192.168.0.0/16",
+	}, userDirectIPs...)
+	return p
+}
+
+func NewStrictProfile(name string) *Profile {
+	p := baseProfile(name)
+	blockSites := []string{
+		"geosite:category-ads-all",
 	}
-	directSites := append(commonSites, userDirectSites...)
-	blockSites := append(commonBlockSites, userBlockSites...)
-	directIPs := append(commonDirectIPs, userDirectIPs...)
-
-	return &Profile{
-		Name:              name,
-		GlobalProxy:       "true",
-		RouteOrder:        "block-proxy-direct",
-		RemoteDNSType:     "DoH",
-		RemoteDNSDomain:   "https://dns.google/dns-query",
-		RemoteDNSIP:       "8.8.8.8",
-		DomesticDNSType:   "DoU",
-		DomesticDNSDomain: "dns.yandex",
-		DomesticDNSIP:     "77.88.8.8",
-		Geoipurl:          "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat",
-		Geositeurl:        "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat",
-		LastUpdated:       "",
-		FakeDNS:           "false",
-		UseChunkFiles:     "true",
-		DnsHosts: map[string]string{
-			"dns.google": "8.8.8.8",
-			"dns.yandex": "77.88.8.8",
-		},
-
-		DirectSites: directSites,
-
-		DirectIp: directIPs,
-
-		BlockSites: blockSites,
-
-		DomainStrategy: "IPIfNonMatch",
+	directIPs := []string{
+		"geoip:private",
+		"10.0.0.0/8",
+		"172.16.0.0/12",
+		"192.168.0.0/16",
 	}
+	p.DirectSites = nil
+	p.BlockSites = blockSites
+	p.DirectIp = directIPs
+	return p
+}
+
+func NewBypassAllProfile(name string) *Profile {
+	p := baseProfile(name)
+	p.DirectSites = nil
+	p.BlockSites = nil
+	p.DirectIp = nil
+	return p
 }
