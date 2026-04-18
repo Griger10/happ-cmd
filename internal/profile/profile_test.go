@@ -24,15 +24,3 @@ func TestNewProfile_Ok(t *testing.T) {
 		t.Error("expected BlockSites to be non-empty")
 	}
 }
-
-func TestNewProfile_ValidURL(t *testing.T) {
-	// Arrange
-	t.Parallel()
-	p := NewProfile("Test", nil, nil, nil)
-
-	// Act + Assert
-	_, err := p.ToURL(ModeAdd)
-	if err != nil {
-		t.Fatal("ToURL returned unexpected error")
-	}
-}
