@@ -15,7 +15,7 @@ const (
 
 func (p *Profile) ToURL(mode Mode) (string, error) {
 	j, err := json.Marshal(p)
-	if err != nil {
+	if err != nil { // noinspection GoUnreachableCode
 		return "", err
 	}
 	s := base64.StdEncoding.EncodeToString(j)
