@@ -7,9 +7,12 @@ import (
 	"happcmd/internal/storage"
 	"os"
 	"path/filepath"
+	"sort"
 
 	"github.com/spf13/cobra"
 )
+
+var store *storage.Storage
 
 var profileCommand = &cobra.Command{
 	Use:   "profile",
@@ -20,20 +23,23 @@ var profileListCommand = &cobra.Command{
 	Use:   "list",
 	Short: "List available profiles",
 	Run: func(cmd *cobra.Command, args []string) {
-		profiles, err := storage.List()
+		profiles, err := store.List()
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}
+
 		if len(profiles) == 0 {
 			fmt.Println("No profiles available")
 			return
 		}
-		fmt.Println("==========")
-		for index, profile := range profiles {
-			fmt.Printf("%d. %s\n", index+1, profile)
+
+		sort.Strings(profiles)
+
+		fmt.Println("Profiles:")
+		for i, p := range profiles {
+			fmt.Printf("  %d) %s\n", i+1, p)
 		}
-		fmt.Println("==========")
 	},
 }
 
@@ -43,11 +49,13 @@ var profileDeleteCommand = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		name := filepath.Base(args[0])
-		err := storage.Delete(name)
+
+		err := store.Delete(name)
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}
+
 		fmt.Println("Deleted:", name)
 	},
 }
@@ -58,17 +66,19 @@ var loadProfileCommand = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		name := filepath.Base(args[0])
-		profile, err := storage.Load(name)
+
+		p, err := store.Load(name)
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}
 
-		data, err := json.MarshalIndent(profile, "", "  ")
+		data, err := json.MarshalIndent(p, "", "  ")
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}
+
 		fmt.Println(string(data))
 	},
 }
@@ -80,7 +90,7 @@ var saveProfileCommand = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		name := filepath.Base(args[0])
 
-		exists, err := storage.Exists(name)
+		exists, err := store.Exists(name)
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
@@ -90,14 +100,13 @@ var saveProfileCommand = &cobra.Command{
 			os.Exit(1)
 		}
 
-		var p *profile.Profile
-
 		profileType, err := cmd.Flags().GetString("type")
-
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}
+
+		var p *profile.Profile
 
 		switch profileType {
 		case "default":
@@ -111,8 +120,7 @@ var saveProfileCommand = &cobra.Command{
 			os.Exit(1)
 		}
 
-		err = storage.Save(name, p)
-		if err != nil {
+		if err := store.Save(name, p); err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}
@@ -122,9 +130,18 @@ var saveProfileCommand = &cobra.Command{
 }
 
 func init() {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+
+	store = storage.New(home)
+
 	profileCommand.AddCommand(profileListCommand)
 	profileCommand.AddCommand(profileDeleteCommand)
 	profileCommand.AddCommand(loadProfileCommand)
 	profileCommand.AddCommand(saveProfileCommand)
+
 	saveProfileCommand.Flags().StringP("type", "t", "default", "Profile type: default|strict|bypass")
 }
