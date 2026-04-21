@@ -69,6 +69,22 @@ func Delete(name string) error {
 	return os.Remove(filepath.Join(path, name+".json"))
 }
 
+func Exists(name string) (bool, error) {
+	path, err := profilesDir()
+	if err != nil {
+		return false, err
+	}
+
+	_, err = os.Stat(filepath.Join(path, name+".json"))
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, err
+}
+
 func profilesDir() (string, error) {
 	home, err := os.UserHomeDir()
 	if err != nil {
