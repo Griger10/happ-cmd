@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var DecodeCommand = &cobra.Command{
+var decodeCommand = &cobra.Command{
 	Use:   "decode",
 	Short: "Decode a happ:// link",
 	Args:  cobra.ExactArgs(1),

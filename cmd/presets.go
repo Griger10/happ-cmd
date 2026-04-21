@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var PresetCommand = &cobra.Command{
+var presetCommand = &cobra.Command{
 	Use:   "preset",
 	Short: "Manage presets",
 }
@@ -45,7 +45,7 @@ var presetsApplyCommand = &cobra.Command{
 }
 
 func init() {
-	PresetCommand.AddCommand(presetsInfoCommand)
-	PresetCommand.AddCommand(presetsApplyCommand)
+	presetCommand.AddCommand(presetsInfoCommand)
+	presetCommand.AddCommand(presetsApplyCommand)
 	presetsApplyCommand.Flags().StringP("mode", "m", "add", "Import mode: add or onadd")
 }
