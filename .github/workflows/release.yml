@@ -16,9 +16,12 @@ jobs:
         with:
           go-version: '1.26'
       - name: Run tests
-        run: go test ./... -v -coverprofile=coverage.out
-      - name: Coverage report
-        run: go tool cover -func=coverage.out
+        run: go test ./... -v -coverprofile=coverage.txt
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
   build:
     needs: tests
     runs-on: ubuntu-latest
