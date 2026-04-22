@@ -1,5 +1,10 @@
 # happcmd
 
+[![CI](https://img.shields.io/badge/CI-passing-brightgreen)](https://github.com/Griger10/happcmd/actions)
+[![codecov](https://codecov.io/gh/Griger10/happ-cmd/graph/badge.svg?token=FQSCBFFR8A)](https://codecov.io/gh/Griger10/happ-cmd)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Go Version](https://img.shields.io/badge/go-1.26-blue)](go.mod)
+
 CLI tool for generating routing profile import links for the [Happ](https://happ.su) application.
 
 ## Installation
